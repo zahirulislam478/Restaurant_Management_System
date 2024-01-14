@@ -1,0 +1,203 @@
+﻿@page "/PurchaseOrders"
+@inject HttpClient http
+@inject NavigationManager nvaManager
+@inject ISnackbar snackbar
+@inject IDialogService DialogService
+
+<MudCard Style="margin-top:20px; width:90%; margin:10px auto; background-color:lightgrey">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar Variant="Variant.Outlined"><MudImage Src="Pictures/person.png" Style="width:30px; height:30px;"></MudImage></MudAvatar>
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body1">PurchaseOrder List</MudText>
+            <MudText Typo="Typo.body2">Order list</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudFab Size="Size.Small" style="margin-top:20px; margin-right:20px" Href="/PurchaseOrders/Add" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" />
+        </CardHeaderActions>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @if (this.PurchaseOrder is null)
+        {
+            <ProgressIndicator />
+        }
+        else
+        {
+            <MudTable Items="@PurchaseOrder">
+                <HeaderContent>
+                    <MudTh>Purchase Details</MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<PurchaseOrder, object>(x=>x.InvoiceNumber)">InvoiceNumber </MudTableSortLabel></MudTh>
+                    <MudTh>Purchase Type </MudTh>
+                    <MudTh>PurchaseOrderDate </MudTh>
+                    <MudTh>TotalAmount </MudTh>
+                    <MudTh>Supplier Name</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>
+                        @if (this.selectedPurchaseOrder.Contains(context.PurchaseOrderId))
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDropDown" OnClick="@(() => UnSelectPurchaseOrder(@context.PurchaseOrderId))"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowRight" OnClick="@(() => SelectPurchaseOrder(@context.PurchaseOrderId))"></MudIconButton>
+                        }
+                    </MudTd>
+                    <MudTd>@context.InvoiceNumber </MudTd>
+                    <MudTh>@(purchaseTypes.ContainsKey(context.PurchaseRuleId) ? purchaseTypes[context.PurchaseRuleId] : "Unknown")</MudTh>
+                    <MudTd>@context.PurchaseOrderDate  </MudTd>
+                    <MudTd>@context.TotalAmount</MudTd>
+                    <MudTh>@(supplierNames.ContainsKey(context.SupplierId) ? supplierNames[context.SupplierId] : "Unknown")</MudTh>
+                    <MudTd>
+                        <MudIconButton Size="Size.Small" Href="@GetLink(context.PurchaseOrderId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"></MudIconButton>
+                        <MudIconButton OnClick="@(()=>ConfirmDelete(@context.PurchaseOrderId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Warning"></MudIconButton>
+                    </MudTd>
+                </RowTemplate>
+
+                <ChildRowContent>
+                        @if (this.selectedPurchaseOrder.Contains(context.PurchaseOrderId))
+                {
+                    <MudTr>
+                        <MudTd Colspan="9">
+                            <MudCard>
+                                <MudCard>
+                                    <MudCardHeader>
+                                        <CardHeaderContent>
+                                            <MudText Typo="Typo.h6" Style="text-align:center;">PurchaseDetails</MudText>
+                                        </CardHeaderContent>
+                                    </MudCardHeader>
+                                    <MudCardContent Class="pa-0" style="width:100%">
+                                            <MudTable Items="@context.PurchaseDetails" Context="purchaseDetailsContext">
+                                            <HeaderContent>
+                                                <MudTh>Item Name</MudTh>
+                                                <MudTh>Ordered Quantity</MudTh>
+                                                <MudTh>ExpireDate</MudTh>
+                                                <MudTh>Edit/Delete</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                    <MudTd>@(itemNames.ContainsKey(purchaseDetailsContext.ItemId) ? itemNames[purchaseDetailsContext.ItemId] : "Unknown")</MudTd>
+                                                <MudTd>@purchaseDetailsContext.OrderedQuantity</MudTd>
+                                                <MudTd>@purchaseDetailsContext.ExpireDate?.ToString("yyyy-MM-dd")</MudTd>
+                                                <MudTd>
+                                                        <MudIconButton Size="Size.Small" Href="@GetLinkP(purchaseDetailsContext.PurchaseDetailId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"></MudIconButton>
+                                                        <MudIconButton OnClick="@(() => ConfirmDelete(purchaseDetailsContext.PurchaseDetailId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Secondary"></MudIconButton>
+                                                </MudTd>
+                                            </RowTemplate>
+                                        </MudTable>
+                                    </MudCardContent>
+                                </MudCard>
+                            </MudCard>
+                        </MudTd>
+                    </MudTr>
+                }
+                </ChildRowContent>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50, 100 }" HorizontalAlignment="HorizontalAlignment.Right" />
+                </PagerContent>
+            </MudTable>
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private List<PurchaseOrder>? PurchaseOrder;
+    List<int> selectedPurchaseOrder = new List<int>();
+
+    public Dictionary<int, string> purchaseTypes = new Dictionary<int, string>();
+    public Dictionary<int, string> supplierNames = new Dictionary<int, string>();
+    public Dictionary<int, string> itemNames = new Dictionary<int, string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<List<PurchaseOrder>>("api/PurchaseOrders/PurchaseDetails/Include");
+        if (data is null)
+        {
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Cannot load PurchaseOrders.", Severity.Error);
+        }
+        else
+        {
+            this.PurchaseOrder = data;
+
+            // Fetch PurchaseType Names
+            var purchaseRuleData = await this.http.GetFromJsonAsync<List<PurchaseRule>>("/api/PurchaseRules");
+            if (purchaseRuleData != null)
+            {
+                foreach (var purchaseRule in purchaseRuleData)
+                {
+                    purchaseTypes[purchaseRule.PurchaseRuleId] = purchaseRule.PurchaseType.ToString();
+                }
+            }
+
+            // Fetch Medical SupplierName Names
+            var supplierData = await this.http.GetFromJsonAsync<List<Supplier>>("/api/Suppliers");
+            if (supplierData != null)
+            {
+                foreach (var supplier in supplierData)
+                {
+                    supplierNames[supplier.SupplierId] = supplier.SupplierName;
+                }
+            }
+
+            // Fetch Medical Advisor Names
+            var itemData = await this.http.GetFromJsonAsync<List<Item>>("/api/Items");
+            if (itemData != null)
+            {
+                foreach (var item in itemData)
+                {
+                    itemNames[item.ItemId] = item.ItemName;
+                }
+            }
+        }
+    }
+
+    private void SelectPurchaseOrder(int id)
+    {
+        this.selectedPurchaseOrder.Add(id);
+        this.StateHasChanged();
+    }
+    private void UnSelectPurchaseOrder(int id)
+    {
+        this.selectedPurchaseOrder.Remove(id);
+        this.StateHasChanged();
+    }
+
+    private string GetLink(int id)
+    {
+        return $"/PurchaseOrders/Edit/{id}";
+    }
+
+    private string GetLinkP(int id)
+    {
+        return $"/PurchaseDetails/Edit/{id}";
+    }
+    
+    private async void ConfirmDelete(int id)
+    {
+        var confirm = this.DialogService.Show<ConfirmDialog>();
+        var result = await confirm.Result;
+        if (!result.Canceled)
+        {
+            await DeletePurchaseOrder(id);
+        }
+
+    }
+
+    private async Task DeletePurchaseOrder(int id)
+    {
+        var response = await this.http.DeleteAsync($"/api/PurchaseOrders/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            if (this.PurchaseOrder is null) { }
+            else
+            {
+                int index = this.PurchaseOrder.FindIndex(b => b.PurchaseOrderId == id);
+                if (index >= 0) this.PurchaseOrder.RemoveAt(index);
+                this.StateHasChanged();
+            }
+        }
+    }
+}

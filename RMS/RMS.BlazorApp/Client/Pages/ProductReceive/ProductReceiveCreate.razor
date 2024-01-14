@@ -1,0 +1,197 @@
+﻿@page "/ProductReceives/Add"
+@inject HttpClient http
+@inject ISnackbar snackbar;
+
+<MudCard Class="card-f" Style="width:60%; margin-top:40px; margin: 10px auto; background-color:antiquewhite">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText style="text-align:center;" Typo="Typo.h6">Add new ProductReceive</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+
+    <MudCardContent>
+        <EditForm Model="@ProductReceive" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 16px;">
+                <div style="width:48%; margin-bottom: 16px;">
+                    <MudTextField Variant="Variant.Outlined" Label="TotalAmount" @bind-Value="ProductReceive.CompanyName" For="@(() => ProductReceive.CompanyName)" />
+                </div>
+
+                <div style="width:48%; margin-bottom: 16px;">
+                    <MudDatePicker Variant="Variant.Outlined" Label="ReceivedDate"
+                                   @bind-Date="@ProductReceive.ReceivedDate"
+                                   DateFormat="dd/MM/yyyy"
+                                   For="@(() => ProductReceive.ReceivedDate)" />
+                </div>
+
+                <div style="width:48%; margin-bottom: 16px;">
+                    <MudTextField Variant="Variant.Outlined" Label="TotalAmount" @bind-Value="ProductReceive.TotalAmount" For="@(() => ProductReceive.TotalAmount)" />
+                </div>
+
+                 <div style="width: 48%; margin-bottom: 16px;">
+                    <MudSelect @ref="mudSelectPurchaseOrder" @bind-Value="ProductReceive.PurchaseOrderId" T="int" Variant="Variant.Outlined" Label="InvoiceNumber">
+                        @if (this.purchaseOrders is not null)
+                        {
+                            @foreach (var ProductReceive in purchaseOrders)
+                            {
+                                <MudSelectItem Value="@ProductReceive.PurchaseOrderId">@ProductReceive.InvoiceNumber</MudSelectItem>
+                            }
+                        }
+                        <MudSelectItem Value="0">Select one</MudSelectItem>
+                    </MudSelect>
+                </div>
+
+                <div style="width: 48%; margin-bottom: 16px;">
+                    <MudSelect @ref="mudSelectSupplier" @bind-Value="ProductReceive.SupplierId" T="int" Variant="Variant.Outlined" Label="Supplier Name">
+                        @if (this.suppliers is not null)
+                        {
+                            @foreach (var ProductReceive in suppliers)
+                            {
+                                <MudSelectItem Value="@ProductReceive.SupplierId">@ProductReceive.SupplierName</MudSelectItem>
+                            }
+                        }
+                        <MudSelectItem Value="0">Select one</MudSelectItem>
+                    </MudSelect>
+                </div>
+            </div>
+            <div>
+                <MudText style="text-align:center;" Typo="Typo.h6">Received Details</MudText>
+                <div class="d-flex justify-content-end" style="margin-left:670px; margin-bottom:15px;">
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Primary" Class="mr-2" OnClick="@AddReceivedDetails" />
+                </div>
+
+                @foreach (var details in ProductReceive.ReceivedDetails)
+                {
+                    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 16px;">
+                        <div style="width: 48%; margin-bottom: 16px;">
+                            <MudSelect @ref="mudSelectItem" @bind-Value="details.ItemId" T="int" Variant="Variant.Outlined" Label="Item Name">
+                                @if (this.items is not null)
+                                {
+                                    @foreach (var details in items)
+                                    {
+                                        <MudSelectItem Value="@details.ItemId">@details.ItemName</MudSelectItem>
+                                    }
+                                }
+                                <MudSelectItem Value="0">Select one</MudSelectItem>
+                            </MudSelect>
+                        </div>
+
+                        <div style="width: 48%; margin-bottom: 16px;">
+                            <MudTextField Variant="Variant.Outlined" Label="Received Quantity" @bind-Value="details.ReceivedQuantity" />
+                        </div>
+
+                        <div style="width:48%; margin-bottom: 16px;">
+                            <MudDatePicker Variant="Variant.Outlined" Label="ExpireDate"
+                                           @bind-Date="details.ExpireDate" DateFormat="dd/MM/yyyy" For="@(() => details.ExpireDate )" />
+                        </div>
+
+                        <div style="width: 48%; margin-bottom: 16px;">
+                            <MudTextField Variant="Variant.Outlined" Label="Unit of Price" @bind-Value="details.UnitOfPrice" />
+                        </div>
+
+                        <div style="width: 48%; margin-bottom: 16px;">
+                            <MudTextField Variant="Variant.Outlined" Label="Vat" @bind-Value="details.Vat" />
+                        </div>
+
+                         <div style="width: 48%; margin-bottom: 16px;">
+                            <MudTextField Variant="Variant.Outlined" Label="Total Price" @bind-Value="details.TotalPrice" />
+                        </div>
+
+                        <div style="width: 48%; margin-bottom: 16px;">
+                            <MudSelect @ref="mudSelectProductReceive" @bind-Value="details.ProductReceiveId" T="int" Variant="Variant.Outlined" Label="Company Name">
+                                @if (this.productReceives is not null)
+                                {
+                                    @foreach (var details in productReceives)
+                                    {
+                                        <MudSelectItem Value="@details.ProductReceiveId">@details.CompanyName</MudSelectItem>
+                                    }
+                                }
+                                <MudSelectItem Value="0">Select one</MudSelectItem>
+                            </MudSelect>
+                        </div>
+
+                        <div style="margin-left: 5px; margin-top:20px; font:300">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Secondary" Class="mr-2" OnClick="@(() => RemoveReceivedDetail(details))" />
+                        </div>
+                    </div>
+                }
+            </div>
+            <div style="display:flex; justify-content:space-between; padding-top:10px;">
+                <MudButton Variant="Variant.Filled" Href="ProductReceives" Color="Color.Dark">Back to</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+            </div>
+        </EditForm>
+    </MudCardContent>
+</MudCard>
+@code {
+    private ProductReceive ProductReceive = new ProductReceive();
+    private List<PurchaseOrder>? purchaseOrders;
+    private List<Supplier>? suppliers;
+    private List<Item>? items;
+    private List<ProductReceive>? productReceives;
+
+    MudSelect<int> mudSelectPurchaseOrder = null!;
+    MudSelect<int> mudSelectSupplier = null!;
+    MudSelect<int> mudSelectItem = null!;
+    MudSelect<int> mudSelectProductReceive = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        purchaseOrders = await http.GetFromJsonAsync<List<PurchaseOrder>>("/api/PurchaseOrders");
+        suppliers = await http.GetFromJsonAsync<List<Supplier>>("/api/Suppliers");
+        items = await http.GetFromJsonAsync<List<Item>>("/api/Items");
+        productReceives = await http.GetFromJsonAsync<List<ProductReceive>>("/api/ProductReceives");
+
+        ProductReceive.ReceivedDetails = new List<ReceivedDetail>
+        {
+            new ReceivedDetail()
+        };
+    }
+
+    private async void HandleValidSubmit(EditContext editContext)
+    {
+        await this.Save();
+    }
+
+    private void AddReceivedDetails()
+    {
+        if (ProductReceive.ReceivedDetails == null)
+        {
+            ProductReceive.ReceivedDetails = new List<ReceivedDetail>();
+        }
+
+        ProductReceive.ReceivedDetails.Add(new ReceivedDetail());
+    }
+
+    private void RemoveReceivedDetail(ReceivedDetail detail)
+    {
+        if (ProductReceive.ReceivedDetails != null)
+        {
+            ProductReceive.ReceivedDetails.Remove(detail);
+        }
+    }
+
+    private async Task Save()
+    {
+        var response = await this.http.PostAsJsonAsync<ProductReceive>("/api/ProductReceives", this.ProductReceive);
+        if (response.IsSuccessStatusCode)
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Data saved.", Severity.Success);
+
+            ProductReceive = new ProductReceive
+                {
+                    ReceivedDetails = ProductReceive.ReceivedDetails,
+                };
+            this.StateHasChanged();
+        }
+        else
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Failed to save.", Severity.Warning);
+        }
+    }
+}

@@ -1,0 +1,225 @@
+﻿@page "/ProductReceives"
+@inject HttpClient http
+@inject NavigationManager nvaManager
+@inject ISnackbar snackbar
+@inject IDialogService DialogService
+
+<MudCard Style="margin-top:20px; width:90%; margin:10px auto; background-color:lightgrey">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar Variant="Variant.Outlined"><MudImage Src="Pictures/person.png" Style="width:30px; height:30px;"></MudImage></MudAvatar>
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body1">Product Receive List</MudText>
+            <MudText Typo="Typo.body2">Receive list</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudFab Size="Size.Small" style="margin-top:20px; margin-right:20px" Href="/ProductReceives/Add" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" />
+        </CardHeaderActions>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @if (this.ProductReceive is null)
+        {
+            <ProgressIndicator />
+        }
+        else
+        {
+            <MudTable Items="@ProductReceive">
+                <HeaderContent>
+                    <MudTh>GoodDetails</MudTh>
+                    <MudTh>Company Name</MudTh>
+                    <MudTh>ReceivedDate </MudTh>
+                    <MudTh>TotalAmount </MudTh>
+                    <MudTh>InvoiceNumber</MudTh>
+                    <MudTh>Supplier Name</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>
+                        @if (this.selectedProductReceive.Contains(context.ProductReceiveId))
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDropDown" OnClick="@(() => UnSelectProductReceive(@context.ProductReceiveId))"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowRight" OnClick="@(() => SelectProductReceive(@context.ProductReceiveId))"></MudIconButton>
+                        }
+                    </MudTd>
+                    <MudTd>@context.CompanyName</MudTd>
+                        <MudTd>@context.ReceivedDate?.ToString("yyyy-MM-dd")</MudTd>
+                    <MudTd>@context.TotalAmount</MudTd>
+                    <MudTd>@(invoiceNumber.ContainsKey(context.PurchaseOrderId) ? invoiceNumber[context.PurchaseOrderId] : "Unknown")</MudTd>
+                    <MudTd>@(supplierNames.ContainsKey(context.SupplierId) ? supplierNames[context.SupplierId] : "Unknown")</MudTd>
+                    <MudTd>
+                        <MudIconButton Size="Size.Small" Href="@GetLink(context.ProductReceiveId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"></MudIconButton>
+                        <MudIconButton OnClick="@(()=>ConfirmDelete(@context.ProductReceiveId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Warning"></MudIconButton>
+                    </MudTd>
+                    </RowTemplate>
+
+                    <ChildRowContent>
+                        @if (this.selectedProductReceive.Contains(context.ProductReceiveId))
+                    {
+                        <MudTr>
+                            <MudTd Colspan="9">
+                                <MudCard>
+                                    <MudCard>
+                                        <MudCardHeader>
+                                            <CardHeaderContent>
+                                                <MudText Typo="Typo.h6" Style="text-align:center;">Received Details</MudText>
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="pa-0" style="width:100%">
+                                            <MudTable Items="@context.ReceivedDetails" Context="receivedDetailsContext">
+                                                <HeaderContent>
+                                                    <MudTh>Item Name</MudTh>
+                                                    <MudTh>Received Quantity</MudTh>
+                                                    <MudTh>ExpireDate</MudTh>
+                                                    <MudTh>UnitOfPrice</MudTh>
+                                                    <MudTh>Vat</MudTh>
+                                                    <MudTh>TotalPrice</MudTh>
+                                                    <MudTh>CompanyName</MudTh>
+                                                    <MudTh>Edit/Delete</MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate>
+                                                    <MudTd>@(itemNames.ContainsKey(receivedDetailsContext.ItemId) ? itemNames[receivedDetailsContext.ItemId] : "Unknown")</MudTd>
+                                                    <MudTd>@receivedDetailsContext.ReceivedQuantity</MudTd>
+                                                    <MudTd>@receivedDetailsContext.ExpireDate?.ToString("yyyy-MM-dd")</MudTd>
+                                                    <MudTd>@receivedDetailsContext.UnitOfPrice</MudTd>
+                                                    <MudTd>@receivedDetailsContext.Vat</MudTd>
+                                                    <MudTd>@receivedDetailsContext.TotalPrice</MudTd>
+                                                    <MudTd>@(companyNames.ContainsKey(receivedDetailsContext.ProductReceiveId) ? companyNames[receivedDetailsContext.ProductReceiveId] : "Unknown")</MudTd>
+                                                    <MudTd>
+                                                        <MudIconButton Size="Size.Small" Href="@GetLinkP(receivedDetailsContext.ReceivedDetailId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary">
+                                                        </MudIconButton>
+                                                        <MudIconButton OnClick="@(() => ConfirmDelete(receivedDetailsContext.ReceivedDetailId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Secondary">
+                                                        </MudIconButton>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudCard>
+                            </MudTd>
+                        </MudTr>
+                    }
+                </ChildRowContent>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50, 100 }" HorizontalAlignment="HorizontalAlignment.Right" />
+                </PagerContent>
+            </MudTable>
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private List<ProductReceive>? ProductReceive;
+    List<int> selectedProductReceive = new List<int>();
+
+    public Dictionary<int, string> invoiceNumber = new Dictionary<int, string>();
+    public Dictionary<int, string> supplierNames = new Dictionary<int, string>();
+    public Dictionary<int, string> itemNames = new Dictionary<int, string>();
+    public Dictionary<int, string> companyNames = new Dictionary<int, string>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<List<ProductReceive>>("api/ProductReceives/ReceivedDetails/Include");
+        if (data is null)
+        {
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Cannot load ProductReceives.", Severity.Error);
+        }
+        else
+        {
+            this.ProductReceive = data;
+
+            // Fetch PurchaseType Names
+            var purchaseOrderData = await this.http.GetFromJsonAsync<List<PurchaseOrder>>("/api/PurchaseOrders");
+            if (purchaseOrderData != null)
+            {
+                foreach (var purchaseOrder in purchaseOrderData)
+                {
+                    invoiceNumber[purchaseOrder.PurchaseOrderId] = purchaseOrder.InvoiceNumber.ToString();
+                }
+            }
+
+            // Fetch Medical SupplierName Names
+            var supplierData = await this.http.GetFromJsonAsync<List<Supplier>>("/api/Suppliers");
+            if (supplierData != null)
+            {
+                foreach (var supplier in supplierData)
+                {
+                    supplierNames[supplier.SupplierId] = supplier.SupplierName;
+                }
+            }
+
+            // Fetch Medical Advisor Names
+            var itemData = await this.http.GetFromJsonAsync<List<Item>>("/api/Items");
+            if (itemData != null)
+            {
+                foreach (var item in itemData)
+                {
+                    itemNames[item.ItemId] = item.ItemName;
+                }
+            }
+
+            // Fetch Medical Advisor Names
+            var productReceiveData = await this.http.GetFromJsonAsync<List<ProductReceive>>("/api/ProductReceives");
+            if (productReceiveData != null)
+            {
+                foreach (var item in productReceiveData)
+                {
+                    companyNames[item.ProductReceiveId] = item.CompanyName;
+                }
+            }
+        }
+    }
+
+    private void SelectProductReceive(int id)
+    {
+        this.selectedProductReceive.Add(id);
+        this.StateHasChanged();
+    }
+    private void UnSelectProductReceive(int id)
+    {
+        this.selectedProductReceive.Remove(id);
+        this.StateHasChanged();
+    }
+
+    private string GetLink(int id)
+    {
+        return $"/ProductReceives/Edit/{id}";
+    }
+
+    private string GetLinkP(int id)
+    {
+        return $"/ReceivedDetails/Edit/{id}";
+    }
+
+    private async void ConfirmDelete(int id)
+    {
+        var confirm = this.DialogService.Show<ConfirmDialog>();
+        var result = await confirm.Result;
+        if (!result.Canceled)
+        {
+            await DeleteProductReceive(id);
+        }
+
+    }
+
+    private async Task DeleteProductReceive(int id)
+    {
+        var response = await this.http.DeleteAsync($"/api/ProductReceives/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            if (this.ProductReceive is null) { }
+            else
+            {
+                int index = this.ProductReceive.FindIndex(b => b.ProductReceiveId == id);
+                if (index >= 0) this.ProductReceive.RemoveAt(index);
+                this.StateHasChanged();
+            }
+        }
+    }
+}

@@ -1,0 +1,72 @@
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.deps.json
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.AssemblyReference.cache
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfoInputs.cache
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfo.cs
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.CoreCompileInputs.cache
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\refint\RMS.BlazorApp.Shared.dll
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Project R-54\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\ref\RMS.BlazorApp.Shared.dll
+C:\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.deps.json
+C:\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.AssemblyReference.cache
+C:\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfoInputs.cache
+C:\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfo.cs
+C:\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.CoreCompileInputs.cache
+C:\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\refint\RMS.BlazorApp.Shared.dll
+C:\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\ref\RMS.BlazorApp.Shared.dll
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.deps.json
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.AssemblyReference.cache
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfoInputs.cache
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfo.cs
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.CoreCompileInputs.cache
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\refint\RMS.BlazorApp.Shared.dll
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Users\LAB104-06\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\ref\RMS.BlazorApp.Shared.dll
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.deps.json
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.AssemblyReference.cache
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfoInputs.cache
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfo.cs
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.CoreCompileInputs.cache
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\refint\RMS.BlazorApp.Shared.dll
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Users\Zahirul Islam\Desktop\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\ref\RMS.BlazorApp.Shared.dll
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.deps.json
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.AssemblyReference.cache
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfoInputs.cache
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfo.cs
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.CoreCompileInputs.cache
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\refint\RMS.BlazorApp.Shared.dll
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Users\Zahirul Islam\Desktop\Restaurant\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\ref\RMS.BlazorApp.Shared.dll
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.deps.json
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\bin\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.AssemblyReference.cache
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfoInputs.cache
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.AssemblyInfo.cs
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.csproj.CoreCompileInputs.cache
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.dll
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\refint\RMS.BlazorApp.Shared.dll
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\RMS.BlazorApp.Shared.pdb
+C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Shared\obj\Debug\net7.0\ref\RMS.BlazorApp.Shared.dll

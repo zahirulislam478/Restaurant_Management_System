@@ -1,0 +1,210 @@
+﻿@page "/items/edit/{id:int}"
+@inject HttpClient http
+@inject ISnackbar snackbar
+@inject IJSRuntime js
+
+<MudCard Class="card-f" Style="width: 60%; margin-top: 40px; margin: 10px auto; background-color: antiquewhite">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Edit Manager</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @if (item is null)
+        {
+            <ProgressIndicator />
+        }
+        else
+        {
+            <EditForm Model="@item" OnSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 16px;">
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudTextField Variant="Variant.Outlined" Label="Item Name" @bind-Value="item.ItemName" For="@(() => item.ItemName)" />
+                    </div>
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudNumericField Variant="Variant.Outlined" Label="Weight" @bind-Value="item.Weight" />
+                    </div>
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudSelect @ref="mudSelectBrand" @bind-Value="item.BrandId" T="int" Variant="Variant.Outlined" Label="Brand">
+                            @if (this.brands is not null)
+                            {
+                                @foreach (var item in brands)
+                                {
+                                    <MudSelectItem Value="@item.BrandId">@item.BrandName</MudSelectItem>
+                                }
+                            }
+                            <MudSelectItem Value="0">Select one</MudSelectItem>
+                        </MudSelect>
+                    </div>
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudSelect @ref="mudSelectGenericProduct" @bind-Value="item.GenericProductId" T="int" Variant="Variant.Outlined" Label="GenericProduct">
+                            @if (this.genericProducts is not null)
+                            {
+                                @foreach (var item in genericProducts)
+                                {
+                                    <MudSelectItem Value="@item.GenericProductId">@item.GenericProductName</MudSelectItem>
+                                }
+                            }
+                            <MudSelectItem Value="0">Select one</MudSelectItem>
+                        </MudSelect>
+                    </div>
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudSelect @ref="mudSelectMeasurement" @bind-Value="item.MeasurementId" T="int" Variant="Variant.Outlined" Label="MeasurementType">
+                            @if (this.measurements is not null)
+                            {
+                                @foreach (var item in measurements)
+                                {
+                                    <MudSelectItem Value="@item.MeasurementId">@item.MeasurementType</MudSelectItem>
+                                }
+                            }
+                            <MudSelectItem Value="0">Select one</MudSelectItem>
+                        </MudSelect>
+                    </div>
+
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudSelect @ref="mudSelectStorageType" @bind-Value="item.StorageTypeId" T="int" Variant="Variant.Outlined" Label="StorageTypeName">
+                            @if (this.storageTypes is not null)
+                            {
+                                @foreach (var item in storageTypes)
+                                {
+                                    <MudSelectItem Value="@item.StorageTypeId">@item.StorageTypeName</MudSelectItem>
+                                }
+                            }
+                            <MudSelectItem Value="0">Select one</MudSelectItem>
+                        </MudSelect>
+                    </div>
+
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudSelect @ref="mudSelectPurchaseRule" @bind-Value="item.PurchaseRuleId" T="int" Variant="Variant.Outlined" Label="ReOrderLevel">
+                            @if (this.purchaseRules is not null)
+                            {
+                                @foreach (var item in purchaseRules)
+                                {
+                                    <MudSelectItem Value="@item.PurchaseRuleId">@item.ReOrderLevel</MudSelectItem>
+                                }
+                            }
+                            <MudSelectItem Value="0">Select one</MudSelectItem>
+                        </MudSelect>
+                    </div>
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudTextField Variant="Variant.Outlined" ReadOnly="true" @bind-Value="item.Picture" For="@(() => item.Picture)" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.AttachFile" OnAdornmentClick="@OpenFilePicker" AdornmentAriaLabel="Add Picture"></MudTextField>
+                    </div>
+                    <div>
+                        <MudCheckBox Label="Is Available" @bind-Checked="item.IsAvailable" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div style="display:flex; justify-content:space-between; padding-top:10px;">
+                        <MudButton Variant="Variant.Filled" Href="items" Color="Color.Dark">Back to</MudButton>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+                    </div>
+                </div>
+            </EditForm>
+        }
+    </MudCardContent>
+</MudCard>
+<InputFile style="display:none" @ref="uploadControl" OnChange="@((InputFileChangeEventArgs args) => OnInputFileChange(args))" />
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private Item item { get; set; } = default!;
+    //private Item item = new Item();
+    private InputFile? uploadControl;
+    private IBrowserFile? file;
+
+    private List<Brand>? brands;
+    private List<GenericProduct>? genericProducts;
+    private List<Measurement>? measurements;
+    private List<StorageType>? storageTypes;
+    private List<PurchaseRule>? purchaseRules;
+
+    MudSelect<int> mudSelectBrand = null!;
+    MudSelect<int> mudSelectGenericProduct = null!;
+    MudSelect<int> mudSelectMeasurement = null!;
+    MudSelect<int> mudSelectStorageType = null!;
+    MudSelect<int> mudSelectPurchaseRule = null!;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<Item>($"/api/items/{id}");
+        if (data is null)
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Failed to load item.", Severity.Error);
+        }
+        else
+        {
+            this.item = data;
+        }
+
+        brands = await http.GetFromJsonAsync<List<Brand>>("/api/brands");
+        genericProducts = await http.GetFromJsonAsync<List<GenericProduct>>("/api/genericProducts");
+        measurements = await http.GetFromJsonAsync<List<Measurement>>("/api/measurements");
+        storageTypes = await http.GetFromJsonAsync<List<StorageType>>("/api/storageTypes");
+        purchaseRules = await http.GetFromJsonAsync<List<PurchaseRule>>("/api/purchaseRules");
+    }
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        this.file = e.File;
+        this.item.Picture = e.File.Name;
+
+    }
+
+    public async Task OpenFilePicker()
+    {
+        await js.InvokeAsync<object>("window.elementClick", uploadControl?.Element);
+    }
+
+    private async void HandleValidSubmit(EditContext editContext)
+    {
+        if (file is not null)
+        {
+            var r = await UploadImage();
+            this.item.Picture = r.FileName;
+        }
+        await this.Save();
+    }
+
+    public async Task<UploadResponse> UploadImage()
+    {
+
+        if (file is not null)
+        {
+            var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(long.MaxValue));
+
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+            content.Add(content: fileContent, name: "\"file\"", fileName: file.Name);
+            var response = await http.PostAsync("api/items/Upload", content);
+            var r = await response.Content.ReadFromJsonAsync<UploadResponse>();
+            if (r is null) return new UploadResponse();
+            else return r;
+        }
+        return new UploadResponse();
+    }
+
+    private async Task Save()
+    {
+        var response = await this.http.PutAsJsonAsync<Item>($"/api/items/{id}", item);
+        if (response.IsSuccessStatusCode)
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Data saved.", Severity.Success);
+        }
+        else
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Failed to save.", Severity.Warning);
+        }
+    }
+}
+

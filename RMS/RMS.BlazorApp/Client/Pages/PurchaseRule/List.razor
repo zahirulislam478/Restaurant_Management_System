@@ -1,0 +1,90 @@
+﻿@page "/PurchaseRules/List"
+@inject HttpClient http
+@inject NavigationManager nvaManager
+@inject ISnackbar snackbar
+@inject IDialogService DialogService
+<MudCard class="mt-10">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">PurchaseRule List</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudFab Size="Size.Small" Href="/PurchaseRules/Add" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" />
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        @if (this.PurchaseRules is null)
+        {
+            <ProgressIndicator />
+        }
+        else
+        {
+            <MudTable Items="@PurchaseRules">
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<PurchaseRule, object>(x=>x.ReOrderLevel )">ReOrderLevel </MudTableSortLabel></MudTh>
+                    <MudTh>MaxOrderQuantity  </MudTh>
+                    <MudTh>PurchaseType </MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.ReOrderLevel</MudTd>
+                    <MudTd>@context.MaxOrderQuantity</MudTd>
+                    <MudTd>@context.PurchaseType</MudTd>
+                    <MudTd>
+                        <MudIconButton Size="Size.Small" Href="@GetLink(context.PurchaseRuleId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary"></MudIconButton>
+                        <MudIconButton OnClick="@(()=>ConfirmDelete(@context.PurchaseRuleId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Warning"></MudIconButton>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }" HorizontalAlignment="HorizontalAlignment.Right" />
+
+                </PagerContent>
+            </MudTable>
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private List<PurchaseRule>? PurchaseRules;
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<List<PurchaseRule>>("api/PurchaseRules");
+        if (data is null)
+        {
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Cannot load PurchaseRules.", Severity.Error);
+        }
+        else
+        {
+            this.PurchaseRules = data;
+        }
+    }
+    private string GetLink(int id)
+    {
+        return $"/PurchaseRules/Edit/{id}";
+    }
+    private async void ConfirmDelete(int id)
+    {
+        var confirm = this.DialogService.Show<ConfirmDialog>();
+        var result = await confirm.Result;
+        if (!result.Canceled)
+        {
+            await DeletePurchaseRules(id);
+        }
+
+    }
+    private async Task DeletePurchaseRules(int id)
+    {
+        var response = await this.http.DeleteAsync($"/api/PurchaseRules/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            if (this.PurchaseRules is null) { }
+            else
+            {
+                int index = this.PurchaseRules.FindIndex(b => b.PurchaseRuleId == id);
+                if (index >= 0) this.PurchaseRules.RemoveAt(index);
+                this.StateHasChanged();
+            }
+        }
+    }
+}

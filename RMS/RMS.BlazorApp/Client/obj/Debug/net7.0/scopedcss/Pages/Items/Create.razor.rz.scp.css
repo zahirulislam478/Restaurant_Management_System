@@ -1,0 +1,10 @@
+.col-2[b-w4cke8srqs] {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 10px;
+    margin-bottom: 10px;
+}
+
+.f-w[b-w4cke8srqs] {
+    width: 50%;
+}

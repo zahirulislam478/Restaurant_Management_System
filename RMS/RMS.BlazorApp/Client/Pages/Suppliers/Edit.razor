@@ -1,0 +1,84 @@
+﻿@page "/Suppliers/Edit/{id:int}"
+@inject HttpClient http
+@inject ISnackbar snackbar
+<MudCard class="form-card">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Edit Supplier</MudText>
+        </CardHeaderContent>
+
+    </MudCardHeader>
+    <MudCardContent>
+        @if (supplier is null)
+        {
+            <ProgressIndicator />
+        }
+        else
+        {
+            <EditForm Model="@supplier" OnSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <div class="col-2">
+                    <MudTextField Label="Supplier Name" @bind-Value="supplier.SupplierName" For="@(() => supplier.SupplierName)" />
+                </div>
+
+                <div class="col-2">
+                    <MudTextField Label="Address"
+                                  @bind-Value="supplier.Address" For="@(() => supplier.Address)" />
+                </div>
+                <div class="col-2">
+                    <MudTextField Label="Contact No"
+                                  @bind-Value="supplier.ContactNo" For="@(() => supplier.ContactNo)" />
+                </div>
+                <div class="col-2">
+                    <span></span>
+                    <div style="display:flex; justify-content:space-between; padding-top:10px;">
+                        <MudButton Variant="Variant.Filled" Href="Suppliers/List" Color="Color.Dark">Back to</MudButton>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+                    </div>
+
+                </div>
+            </EditForm>
+        }
+    </MudCardContent>
+</MudCard>
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private Supplier supplier { get; set; } = default!;
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<Supplier>($"/api/Suppliers/{id}");
+        if (data is null)
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Failed to load supplier.", Severity.Error);
+        }
+        else
+        {
+            this.supplier = data;
+        }
+    }
+    private async void HandleValidSubmit(EditContext editContext)
+    {
+
+        await this.Save();
+
+    }
+    private async Task Save()
+    {
+        var response = await this.http.PutAsJsonAsync<Supplier>($"/api/Suppliers/{id}", this.supplier);
+        if (response.IsSuccessStatusCode)
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Data saved.", Severity.Success);
+        }
+        else
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Failed to save.", Severity.Warning);
+        }
+    }
+}

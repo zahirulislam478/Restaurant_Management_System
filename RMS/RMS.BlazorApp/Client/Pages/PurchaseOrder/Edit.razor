@@ -1,0 +1,187 @@
+﻿@page "/PurchaseOrders/Edit/{id:int}"
+@inject HttpClient http
+@inject ISnackbar snackbar
+
+<MudCard Class="card-f" Style="width:60%; margin-top: 60px; margin: 10px auto; background-color:antiquewhite">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Edit PurchaseOrder</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @if (PurchaseOrder is null)
+        {
+            <ProgressIndicator />
+        }
+        else
+        {
+            <EditForm Model="@PurchaseOrder" OnSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 16px;">
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudTextField Variant="Variant.Outlined" Label="InvoiceNumber " @bind-Value="PurchaseOrder.InvoiceNumber "For="@(() => PurchaseOrder.InvoiceNumber )" />
+                    </div>
+
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudDatePicker Variant="Variant.Outlined" Label="PurchaseOrderDate "
+                        @bind-Date="PurchaseOrder.PurchaseOrderDate " For="@(() => PurchaseOrder.PurchaseOrderDate )"/>
+                    </div>
+
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudTextField Variant="Variant.Outlined" Label="TotalAmount  "
+                        @bind-Value="PurchaseOrder.TotalAmount  " For="@(() => PurchaseOrder.TotalAmount  )" />
+
+                    </div>
+
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudSelect @ref="mudSelectPurchaseRule" @bind-Value="PurchaseOrder.PurchaseRuleId" T="int" Variant="Variant.Outlined" Label="ReOrderLevel">
+                            @if (this.purchaseRules is not null)
+                            {
+                                @foreach (var PurchaseOrder in purchaseRules)
+                                {
+                                    <MudSelectItem Value="@PurchaseOrder.PurchaseRuleId">@PurchaseOrder.ReOrderLevel</MudSelectItem>
+                                }
+                            }
+                            <MudSelectItem Value="0">Select one</MudSelectItem>
+                        </MudSelect>
+                    </div>
+
+                    <div style="width: 48%; margin-bottom: 16px;">
+                        <MudSelect @ref="mudSelectSupplier" @bind-Value="PurchaseOrder.SupplierId" T="int" Variant="Variant.Outlined" Label="ReOrderLevel">
+                            @if (this.suppliers is not null)
+                            {
+                                @foreach (var PurchaseOrder in suppliers)
+                                {
+                                    <MudSelectItem Value="@PurchaseOrder.SupplierId">@PurchaseOrder.SupplierName</MudSelectItem>
+                                }
+                            }
+                            <MudSelectItem Value="0">Select one</MudSelectItem>
+                        </MudSelect>
+                    </div>
+                </div>
+                <div>
+                    <MudText style="text-align:center;" Typo="Typo.h6">Purchase Details</MudText>
+                    <div class="d-flex justify-content-end" style="margin-left:670px; margin-bottom:15px;">
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Size="Size.Small" Color="Color.Primary" Class="mr-2" OnClick="@AddPurchaseDetails" />
+                    </div>
+
+                    @foreach (var details in PurchaseOrder.PurchaseDetails)
+                    {
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 16px;">
+                            <div style="width: 48%; margin-bottom: 16px;">
+                                <MudSelect @ref="mudSelectItem" @bind-Value="details.ItemId" T="int" Variant="Variant.Outlined" Label="Item Name">
+                                    @if (this.items is not null)
+                                    {
+                                        @foreach (var details in items)
+                                        {
+                                            <MudSelectItem Value="@details.ItemId">@details.ItemName</MudSelectItem>
+                                        }
+                                    }
+                                    <MudSelectItem Value="0">Select one</MudSelectItem>
+                                </MudSelect>
+                            </div>
+
+                            <div style="width: 48%; margin-bottom: 16px;">
+                                <MudTextField Variant="Variant.Outlined" Label="Ordered Quantity" @bind-Value="details.OrderedQuantity" />
+                            </div>
+
+                            <div style="width:48%; margin-bottom: 16px;">
+                                <MudDatePicker Variant="Variant.Outlined" Label="ExpireDate"
+                                @bind-Date="details.ExpireDate" DateFormat="dd/MM/yyyy" For="@(() => details.ExpireDate )" />
+                            </div>
+
+                            <div style="margin-left: 5px; margin-top:20px; font:300">
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Secondary" Class="mr-2" OnClick="@(() => RemovePurchaseDetail(details))" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div style="display:flex; justify-content:space-between; padding-top:10px;">
+                    <MudButton Variant="Variant.Filled" Href="PurchaseOrders" Color="Color.Dark">Back to</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Save</MudButton>
+                </div>
+            </EditForm>
+        }
+    </MudCardContent>
+</MudCard>
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private PurchaseOrder PurchaseOrder { get; set; } = default!;
+    private PurchaseDetail PurchaseDetail { get; set; } = default!;
+
+    private List<PurchaseRule>? purchaseRules;
+    private List<Supplier>? suppliers;
+    private List<Item>? items;
+
+    MudSelect<int> mudSelectPurchaseRule = null!;
+    MudSelect<int> mudSelectSupplier = null!;
+    MudSelect<int> mudSelectItem = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<PurchaseOrder>($"/api/PurchaseOrders/{id}");
+        if (data is null)
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Failed to load PurchaseOrder.", Severity.Error);
+        }
+        else
+        {
+            this.PurchaseOrder = data;
+        }
+
+        purchaseRules = await http.GetFromJsonAsync<List<PurchaseRule>>("/api/PurchaseRules");
+        suppliers = await http.GetFromJsonAsync<List<Supplier>>("/api/Suppliers");
+        items = await http.GetFromJsonAsync<List<Item>>("/api/Items");
+
+        PurchaseOrder.PurchaseDetails = new List<PurchaseDetail>
+        {
+            new PurchaseDetail()
+        };
+    }
+
+    private void AddPurchaseDetails()
+    {
+        if (PurchaseOrder.PurchaseDetails == null)
+        {
+            PurchaseOrder.PurchaseDetails = new List<PurchaseDetail>();
+        }
+
+        PurchaseOrder.PurchaseDetails.Add(new PurchaseDetail());
+    }
+
+    private void RemovePurchaseDetail(PurchaseDetail detail)
+    {
+        if (PurchaseOrder.PurchaseDetails != null)
+        {
+            PurchaseOrder.PurchaseDetails.Remove(detail);
+        }
+    }
+
+    private async void HandleValidSubmit(EditContext editContext)
+    {
+
+        await this.Save();
+
+    }
+    private async Task Save()
+    {
+        var response = await this.http.PutAsJsonAsync<PurchaseOrder>($"/api/PurchaseOrders/{id}", this.PurchaseOrder);
+        if (response.IsSuccessStatusCode)
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Data saved.", Severity.Success);
+        }
+        else
+        {
+            this.snackbar.Clear();
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Failed to save.", Severity.Warning);
+        }
+    }
+}

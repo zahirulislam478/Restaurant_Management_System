@@ -1,0 +1,202 @@
+﻿@page "/DailyMenus"
+@inject HttpClient http
+@inject NavigationManager nvaManager
+@inject ISnackbar snackbar
+@inject IDialogService DialogService
+
+<MudCard Style="margin-top:20px; width:90%; margin:10px auto; background-color:lightgrey">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar Variant="Variant.Outlined"><MudImage Src="Pictures/person.png" Style="width:30px; height:30px;"></MudImage></MudAvatar>
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body1">Daily Menu List</MudText>
+            <MudText Typo="Typo.body2">Menu list</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudFab Size="Size.Small" style="margin-top:20px; margin-right:20px" Href="/DailyMenus/Add" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" />
+        </CardHeaderActions>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @if (this.DailyMenu is null)
+        {
+            <ProgressIndicator />
+        }
+        else
+        {
+            <MudTable Items="@DailyMenu">
+                <HeaderContent>
+                    <MudTh>Requisitions</MudTh>
+                    <MudTh>Recipe Name</MudTh>
+                    <MudTh>ServingDate </MudTh>
+                    <MudTh>ServingQuantity</MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>
+                        @if (this.selectedDailyMenu.Contains(context.DailyMenuId))
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDropDown" OnClick="@(() => UnSelectDailyMenu(@context.DailyMenuId))"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowRight" OnClick="@(() => SelectDailyMenu(@context.DailyMenuId))"></MudIconButton>
+                        }
+                    </MudTd>
+                    <MudTd>@(recipeNames.ContainsKey(context.RecipeId) ? recipeNames[context.RecipeId] : "Unknown")</MudTd>
+                    <MudTd>@context.ServingDate?.ToString("yyyy-MM-dd")</MudTd>
+                    <MudTd>@context.ServingQuantity</MudTd>
+                    <MudTd>
+                        <MudIconButton Size="Size.Small" Href="@GetLink(context.DailyMenuId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"></MudIconButton>
+                        <MudIconButton OnClick="@(()=>ConfirmDelete(@context.DailyMenuId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Warning"></MudIconButton>
+                    </MudTd>
+                    </RowTemplate>
+
+                    <ChildRowContent>
+                        @if (this.selectedDailyMenu.Contains(context.DailyMenuId))
+                    {
+                        <MudTr>
+                            <MudTd Colspan="9">
+                                <MudCard>
+                                    <MudCard>
+                                        <MudCardHeader>
+                                            <CardHeaderContent>
+                                                <MudText Typo="Typo.h6" Style="text-align:center;">Kitchen Requisition</MudText>
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="pa-0" style="width:100%">
+                                            <MudTable Items="@context.Requisitions" Context="requisitionsContext">
+                                                <HeaderContent>
+                                                    <MudTh>Item Name</MudTh>
+                                                    <MudTh>Serving Date</MudTh>
+                                                    <MudTh>Requisition Quantity</MudTh>
+                                                    <MudTh>Edit/Delete</MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate>
+                                                    <MudTd>@(itemNames.ContainsKey(requisitionsContext.ItemId) ? itemNames[requisitionsContext.ItemId] : "Unknown")</MudTd>
+                                                    <MudTd>@(servingDates.ContainsKey(requisitionsContext.DailyMenuId) ? servingDates[requisitionsContext.DailyMenuId] : "Unknown")</MudTd>
+                                                    <MudTd>@requisitionsContext.RequisitionQuantity</MudTd>
+                                                    <MudTd>
+                                                        <MudIconButton Size="Size.Small" Href="@GetLinkP(requisitionsContext.RequisitionId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary">
+                                                        </MudIconButton>
+                                                        <MudIconButton OnClick="@(() => ConfirmDelete(requisitionsContext.RequisitionId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Secondary">
+                                                        </MudIconButton>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudCard>
+                            </MudTd>
+                        </MudTr>
+                    }
+                </ChildRowContent>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50, 100 }" HorizontalAlignment="HorizontalAlignment.Right" />
+                </PagerContent>
+            </MudTable>
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private List<DailyMenu>? DailyMenu;
+    List<int> selectedDailyMenu = new List<int>();
+
+    public Dictionary<int, string> recipeNames = new Dictionary<int, string>();
+    public Dictionary<int, string> servingDates = new Dictionary<int, string>();
+    public Dictionary<int, string> itemNames = new Dictionary<int, string>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<List<DailyMenu>>("api/DailyMenus/Requisitions/Include");
+        if (data is null)
+        {
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Cannot load ProductReceives.", Severity.Error);
+        }
+        else
+        {
+            this.DailyMenu = data;
+
+            // Fetch Medical recipeName Names
+            var recipeData = await this.http.GetFromJsonAsync<List<Recipe>>("/api/Recipes");
+            if (recipeData != null)
+            {
+                foreach (var recipe in recipeData)
+                {
+                    recipeNames[recipe.RecipeId] = recipe.RecipeName;
+                }
+            }
+
+            // Fetch Medical Serving Date
+            var dailyMenuData = await this.http.GetFromJsonAsync<List<DailyMenu>>("/api/DailyMenus");
+            if (dailyMenuData != null)
+            {
+                foreach (var dailyMenu in dailyMenuData)
+                {
+                    servingDates[dailyMenu.DailyMenuId] = dailyMenu.ServingDate?.ToString() ?? "N/A";
+                }
+            }
+
+            // Fetch Medical Advisor Names
+            var itemData = await this.http.GetFromJsonAsync<List<Item>>("/api/Items");
+            if (itemData != null)
+            {
+                foreach (var item in itemData)
+                {
+                    itemNames[item.ItemId] = item.ItemName;
+                }
+            }
+        }
+    }
+
+    private void SelectDailyMenu(int id)
+    {
+        this.selectedDailyMenu.Add(id);
+        this.StateHasChanged();
+    }
+    private void UnSelectDailyMenu(int id)
+    {
+        this.selectedDailyMenu.Remove(id);
+        this.StateHasChanged();
+    }
+
+    private string GetLink(int id)
+    {
+        return $"/DailyMenus/Edit/{id}";
+    }
+
+    private string GetLinkP(int id)
+    {
+        return $"/Requisitions/Edit/{id}";
+    }
+
+    private async void ConfirmDelete(int id)
+    {
+        var confirm = this.DialogService.Show<ConfirmDialog>();
+        var result = await confirm.Result;
+        if (!result.Canceled)
+        {
+            await DeleteDailyMenu(id);
+        }
+
+    }
+
+    private async Task DeleteDailyMenu(int id)
+    {
+        var response = await this.http.DeleteAsync($"/api/DailyMenus/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            if (this.DailyMenu is null) { }
+            else
+            {
+                int index = this.DailyMenu.FindIndex(b => b.DailyMenuId == id);
+                if (index >= 0) this.DailyMenu.RemoveAt(index);
+                this.StateHasChanged();
+            }
+        }
+    }
+}

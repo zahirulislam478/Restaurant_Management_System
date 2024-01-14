@@ -1,0 +1,106 @@
+﻿@page "/items"
+@using RMS.BlazorApp.Shared.ViewModels
+@inject HttpClient http
+@inject ISnackbar snackbar
+@inject IDialogService DialogService
+
+<MudCard Style="margin-top:20px; width:95%; margin:10px auto; background-color:lightgrey">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar Variant="Variant.Outlined"><MudImage Src="Pictures/football-team.png" Style="width:30px; height:30px;"></MudImage></MudAvatar>
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body1">Items</MudText>
+            <MudText Typo="Typo.body2">List of items</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudFab Size="Size.Medium" Href="/items/Create" style="margin-top:20px; margin-right:20px;" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Add" />
+        </CardHeaderActions>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @if (model is not null)
+        {
+            <MudTable Items="@model" Hover="true" SortLabel="Sort By">
+                <HeaderContent>
+                    <MudTh>Picture</MudTh>
+                    <MudTh DataLabel="Item"><MudTableSortLabel SortBy="new Func<ItemViewModel, object>(x=>x.ItemId)">Item Name</MudTableSortLabel></MudTh>
+                    <MudTh DataLabel="Brand Name"><MudTableSortLabel SortBy="new Func<ItemViewModel, object>(x=>x.BrandId)">Brand Name</MudTableSortLabel></MudTh>
+                    <MudTh DataLabel="Weight"><MudTableSortLabel SortBy="new Func<ItemViewModel, object>(x=>x.Weight)">Weight</MudTableSortLabel></MudTh>
+                    <MudTh DataLabel="Measurement Type"><MudTableSortLabel SortBy="new Func<ItemViewModel, object>(x=>x.MeasurementId)">Measurement Type</MudTableSortLabel></MudTh>
+                    <MudTh DataLabel="Generic ProductName"><MudTableSortLabel SortBy="new Func<ItemViewModel, object>(x=>x.GenericProductId)">Generic ProductName</MudTableSortLabel></MudTh>
+                    <MudTh DataLabel="StorageType Name"><MudTableSortLabel SortBy="new Func<ItemViewModel, object>(x=>x.StorageTypeId)">StorageType Name</MudTableSortLabel></MudTh>
+                   @*  <MudTh DataLabel="ReOrder Level"><MudTableSortLabel SortBy="new Func<ItemViewModel, object>(x=>x.PurchaseRuleId)">ReOrder Level</MudTableSortLabel></MudTh> *@
+                    <MudTh DataLabel="Action">...</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Picture"><img class="img-thumbnail rounded-circle" src="/Pictures/@context.Picture" style="width:40px;height:40px" /></MudTd>
+                    <MudTd DataLabel="Item name">@context.ItemName</MudTd>
+                    <MudTd DataLabel="Brand name">@context.BrandName</MudTd>
+                    <MudTd DataLabel="Weight">@context.Weight</MudTd>
+                    <MudTd DataLabel="Measurement Type">@context.MeasurementType</MudTd>
+                    <MudTd DataLabel="Generic ProductName">@context.GenericProductName</MudTd>
+                    <MudTd DataLabel="StorageType Name">@context.StorageTypeName</MudTd>
+                   @*  <MudTd DataLabel="ReOrder Level">@context.ReOrderLevel</MudTd> *@
+                    <MudTd DataLabel="Action">
+                        <MudIconButton Size="Size.Small" Href="@GetLink(context.ItemId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary">
+                        </MudIconButton>
+                        <MudIconButton OnClick="@(()=>ConfirmDelete(@context.ItemId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Warning">
+                        </MudIconButton>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[]{5, 10, 25,50, 100}" />
+                </PagerContent>
+            </MudTable>
+        }
+        else
+        {
+            <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+        }
+
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Href="/" Variant="Variant.Text" Color="Color.Primary">Back to list</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    private List<ItemViewModel>? model;
+    private List<Item>? items;
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<List<ItemViewModel>>("/api/Items/VM");
+        if (data is not null)
+            this.model = data;
+    }
+    private string GetLink(int id)
+    {
+        return $"/Items/Edit/{id}";
+    }
+    private async Task ConfirmDelete(int id)
+    {
+        var confirm = this.DialogService.Show<ConfirmDialog>();
+        var result = await confirm.Result;
+        if (!result.Canceled)
+        {
+            await DeleteItem(id);
+        }
+    }
+
+    private async Task DeleteItem(int id)
+    {
+        var response = await this.http.DeleteAsync($"/api/Items/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            if (this.model is null) { }
+            else
+            {
+                int index = this.model.FindIndex(b => b.ItemId == id);
+                if (index >= 0) this.model.RemoveAt(index);
+                this.StateHasChanged();
+            }
+        }
+    }
+
+}

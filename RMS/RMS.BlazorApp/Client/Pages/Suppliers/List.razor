@@ -1,0 +1,90 @@
+﻿@page "/Suppliers/List"
+@inject HttpClient http
+@inject NavigationManager nvaManager
+@inject ISnackbar snackbar
+@inject IDialogService DialogService
+<MudCard class="mt-10">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Supplier List</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudFab Size="Size.Small" Href="/Suppliers/Add" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" />
+        </CardHeaderActions>
+    </MudCardHeader>
+    <MudCardContent>
+        @if (this.suppliers is null)
+        {
+            <ProgressIndicator />
+        }
+        else
+        {
+            <MudTable Items="@suppliers">
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<Supplier, object>(x=>x.SupplierName)">SupplierName</MudTableSortLabel></MudTh>
+                    <MudTh>Address</MudTh>
+                    <MudTh>Contact No</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.SupplierName</MudTd>
+                    <MudTd>@context.Address</MudTd>
+                    <MudTd>@context.ContactNo</MudTd>
+                    <MudTd>
+                        <MudIconButton Size="Size.Small" Href="@GetLink(context.SupplierId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary"></MudIconButton>
+                        <MudIconButton OnClick="@(()=>ConfirmDelete(@context.SupplierId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Warning"></MudIconButton>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }" HorizontalAlignment="HorizontalAlignment.Right" />
+
+                </PagerContent>
+            </MudTable>
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private List<Supplier>? suppliers;
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<List<Supplier>>("api/Suppliers");
+        if (data is null)
+        {
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Cannot load busses.", Severity.Error);
+        }
+        else
+        {
+            this.suppliers = data;
+        }
+    }
+    private string GetLink(int id)
+    {
+        return $"/Suppliers/Edit/{id}";
+    }
+    private async void ConfirmDelete(int id)
+    {
+        var confirm = this.DialogService.Show<ConfirmDialog>();
+        var result = await confirm.Result;
+        if (!result.Canceled)
+        {
+            await DeleteSupplier(id);
+        }
+
+    }
+    private async Task DeleteSupplier(int id)
+    {
+        var response = await this.http.DeleteAsync($"/api/Suppliers/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            if (this.suppliers is null) { }
+            else
+            {
+                int index = this.suppliers.FindIndex(b => b.SupplierId == id);
+                if (index >= 0) this.suppliers.RemoveAt(index);
+                this.StateHasChanged();
+            }
+        }
+    }
+}

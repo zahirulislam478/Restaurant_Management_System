@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "RMufIGojqZIDVyPogV7r2rpvb1vVBtjvb9gvTT1K8Ns=",
+  "Source": "RMS.Web",
+  "BasePath": "_content/RMS.Web",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

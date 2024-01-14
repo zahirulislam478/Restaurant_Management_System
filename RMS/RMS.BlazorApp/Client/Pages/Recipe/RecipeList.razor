@@ -1,0 +1,191 @@
+﻿@page "/Recipes"
+@inject HttpClient http
+@inject NavigationManager nvaManager
+@inject ISnackbar snackbar
+@inject IDialogService DialogService
+
+<MudCard Style="margin-top:20px; width:90%; margin:10px auto; background-color:lightgrey">
+    <MudCardHeader>
+        <CardHeaderAvatar>
+            <MudAvatar Variant="Variant.Outlined"><MudImage Src="Pictures/person.png" Style="width:30px; height:30px;"></MudImage></MudAvatar>
+        </CardHeaderAvatar>
+        <CardHeaderContent>
+            <MudText Typo="Typo.body1">Recipes List</MudText>
+            <MudText Typo="Typo.body2">Recipe list</MudText>
+        </CardHeaderContent>
+        <CardHeaderActions>
+            <MudFab Size="Size.Small" style="margin-top:20px; margin-right:20px" Href="/Recipes/Add" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" />
+        </CardHeaderActions>
+    </MudCardHeader>
+
+    <MudCardContent>
+        @if (this.Recipe is null)
+        {
+            <ProgressIndicator />
+        }
+        else
+        {
+            <MudTable Items="@Recipe">
+                <HeaderContent>
+                    <MudTh>Recipe Ingredients</MudTh>
+                    <MudTh>Recipe Name</MudTh>
+                    <MudTh>ServingNumber</MudTh>
+                    <MudTh>RecipeQuantity </MudTh>
+                    <MudTh>Actions</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>
+                        @if (this.selectedRecipe.Contains(context.RecipeId))
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDropDown" OnClick="@(() => UnSelectRecipe(@context.RecipeId))"></MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowRight" OnClick="@(() => SelectRecipe(@context.RecipeId))"></MudIconButton>
+                        }
+                    </MudTd>
+                    <MudTd>@context.RecipeName</MudTd>
+                        <MudTd>@context.ServingNumber</MudTd>
+                        <MudTd>@context.RecipeQuantity</MudTd>
+                        <MudTd>
+                            <MudIconButton Size="Size.Small" Href="@GetLink(context.RecipeId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"></MudIconButton>
+                            <MudIconButton OnClick="@(()=>ConfirmDelete(@context.RecipeId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Warning"></MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+
+                    <ChildRowContent>
+                        @if (this.selectedRecipe.Contains(context.RecipeId))
+                    {
+                        <MudTr>
+                            <MudTd Colspan="9">
+                                <MudCard>
+                                    <MudCard>
+                                        <MudCardHeader>
+                                            <CardHeaderContent>
+                                                <MudText Typo="Typo.h6" Style="text-align:center;">Recipe Ingredients</MudText>
+                                            </CardHeaderContent>
+                                        </MudCardHeader>
+                                        <MudCardContent Class="pa-0" style="width:100%">
+                                            <MudTable Items="@context.RecipeIngredients" Context="recipeIngredientsContext">
+                                                <HeaderContent>
+                                                    <MudTh>Item Name</MudTh>
+                                                    <MudTh>Recipe Name</MudTh>
+                                                    <MudTh>Ingredient Quantity</MudTh>
+                                                    <MudTh>Edit/Delete</MudTh>
+                                                </HeaderContent>
+                                                <RowTemplate>
+                                                    <MudTd>@(itemNames.ContainsKey(recipeIngredientsContext.ItemId) ? itemNames[recipeIngredientsContext.ItemId] : "Unknown")</MudTd>
+                                                    <MudTd>@(recipeNames.ContainsKey(recipeIngredientsContext.RecipeId) ? recipeNames[recipeIngredientsContext.RecipeId] : "Unknown")</MudTd>
+                                                    <MudTd>@recipeIngredientsContext.IngredientQuantity</MudTd>
+                                                    <MudTd>
+                                                        <MudIconButton Size="Size.Small" Href="@GetLinkP(recipeIngredientsContext.RecipeIngredientId)" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary">
+                                                        </MudIconButton>
+                                                        <MudIconButton OnClick="@(() => ConfirmDelete(recipeIngredientsContext.RecipeIngredientId))" Size="Size.Small" ButtonType="ButtonType.Button" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Secondary">
+                                                        </MudIconButton>
+                                                    </MudTd>
+                                                </RowTemplate>
+                                            </MudTable>
+                                        </MudCardContent>
+                                    </MudCard>
+                                </MudCard>
+                            </MudTd>
+                        </MudTr>
+                    }
+                </ChildRowContent>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50, 100 }" HorizontalAlignment="HorizontalAlignment.Right" />
+                </PagerContent>
+            </MudTable>
+        }
+    </MudCardContent>
+</MudCard>
+
+@code {
+    private List<Recipe>? Recipe;
+    List<int> selectedRecipe = new List<int>();
+
+    public Dictionary<int, string> itemNames = new Dictionary<int, string>();
+    public Dictionary<int, string> recipeNames = new Dictionary<int, string>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await this.http.GetFromJsonAsync<List<Recipe>>("api/Recipes/RecipeIngredients/Include");
+        if (data is null)
+        {
+            this.snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+            this.snackbar.Add("Cannot load ProductReceives.", Severity.Error);
+        }
+        else
+        {
+            this.Recipe = data;
+
+            // Fetch item Names
+            var itemData = await this.http.GetFromJsonAsync<List<Item>>("/api/Items");
+            if (itemData != null)
+            {
+                foreach (var item in itemData)
+                {
+                    itemNames[item.ItemId] = item.ItemName;
+                }
+            }
+
+            // Fetch recipe Names
+            var recipeData = await this.http.GetFromJsonAsync<List<Recipe>>("/api/Recipes");
+            if (recipeData != null)
+            {
+                foreach (var recipe in recipeData)
+                {
+                    recipeNames[recipe.RecipeId] = recipe.RecipeName;
+                }
+            }
+        }
+    }
+
+    private void SelectRecipe(int id)
+    {
+        this.selectedRecipe.Add(id);
+        this.StateHasChanged();
+    }
+    private void UnSelectRecipe(int id)
+    {
+        this.selectedRecipe.Remove(id);
+        this.StateHasChanged();
+    }
+
+    private string GetLink(int id)
+    {
+        return $"/Recipes/Edit/{id}";
+    }
+
+    private string GetLinkP(int id)
+    {
+        return $"/RecipeIngredients/Edit/{id}";
+    }
+
+    private async void ConfirmDelete(int id)
+    {
+        var confirm = this.DialogService.Show<ConfirmDialog>();
+        var result = await confirm.Result;
+        if (!result.Canceled)
+        {
+            await DeleteRecipe(id);
+        }
+
+    }
+
+    private async Task DeleteRecipe(int id)
+    {
+        var response = await this.http.DeleteAsync($"/api/Recipes/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            if (this.Recipe is null) { }
+            else
+            {
+                int index = this.Recipe.FindIndex(b => b.RecipeId == id);
+                if (index >= 0) this.Recipe.RemoveAt(index);
+                this.StateHasChanged();
+            }
+        }
+    }
+}

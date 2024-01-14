@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\RMS.Web.props" />
+</Project>

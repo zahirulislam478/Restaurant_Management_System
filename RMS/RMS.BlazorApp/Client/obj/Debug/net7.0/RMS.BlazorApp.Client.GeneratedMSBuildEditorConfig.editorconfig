@@ -1,0 +1,141 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = RMS.BlazorApp.Client
+build_property.RootNamespace = RMS.BlazorApp.Client
+build_property.ProjectDir = C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Client\
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\LAB104-06\Desktop\1273288\RMS\RMS.BlazorApp\Client
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Dialogs/ConfirmDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = RGlhbG9nc1xDb25maXJtRGlhbG9nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Bills/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbHNcQ3JlYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Bills/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbHNcRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Bills/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQmlsbHNcTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/DailyMenu/DailyMenuCreate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFpbHlNZW51XERhaWx5TWVudUNyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/DailyMenu/DailyMenuEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFpbHlNZW51XERhaWx5TWVudUVkaXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/DailyMenu/DailyMenuList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFpbHlNZW51XERhaWx5TWVudUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Items/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbXNcRWRpdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/ProductReceive/ProductReceiveCreate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZHVjdFJlY2VpdmVcUHJvZHVjdFJlY2VpdmVDcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/ProductReceive/ProductReceiveEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZHVjdFJlY2VpdmVcUHJvZHVjdFJlY2VpdmVFZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/ProductReceive/ProductReceiveList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZHVjdFJlY2VpdmVcUHJvZHVjdFJlY2VpdmVMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/PurchaseOrder/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VPcmRlclxDcmVhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/PurchaseOrder/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VPcmRlclxFZGl0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/PurchaseOrder/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VPcmRlclxMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/PurchaseRule/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VSdWxlXENyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/PurchaseRule/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VSdWxlXEVkaXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/PurchaseRule/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VSdWxlXExpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Recipe/RecipeCreate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVjaXBlXFJlY2lwZUNyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Recipe/RecipeEdit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVjaXBlXFJlY2lwZUVkaXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Recipe/RecipeList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVjaXBlXFJlY2lwZUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Suppliers/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VwcGxpZXJzXENyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Suppliers/Edit.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VwcGxpZXJzXEVkaXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Suppliers/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VwcGxpZXJzXExpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Shared/ProgressIndicator.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFByb2dyZXNzSW5kaWNhdG9yLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Items/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbXNcQ3JlYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-w4cke8srqs
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Pages/Items/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbXNcTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-53r2f23aed
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-a2px8u4obe
+
+[C:/Users/LAB104-06/Desktop/1273288/RMS/RMS.BlazorApp/Client/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-nhv8gnb8sf
